@@ -8,6 +8,7 @@
 chrout = $ffd2
 chrin = $ffcf
 
+; print prompt
 ldx #0
 ploop lda prompt,x
 jsr chrout
@@ -15,6 +16,7 @@ inx
 cpx #7
 bne ploop
 
+; get number from user
 ldy #$00
 rloop jsr chrin
 and #$0F
@@ -23,13 +25,17 @@ iny
 cmp #$0d
 bne rloop
 
+; print new line
 lda #$0d
 jsr chrout
 
+; set y to last digit index
 dey
 dey
 ldx #$00
 
+; loop digits and aggregate
+; value into data8
 next_digit lda coef,x
 stx coef_pos
 tax
@@ -49,6 +55,10 @@ bpl next_digit
 
 rts
 
+; mult8 multiplies to 8 bit integers
+; input args are x and y registers
+; return value to a register
+; a,y are modified
 mult8
 .(
 input_a = scratch
