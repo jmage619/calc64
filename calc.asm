@@ -55,7 +55,7 @@ bpl next_digit
 
 rts
 
-; mult8 multiplies to 8 bit integers
+; mult8 multiplies two 8 bit integers
 ; input args are x and y registers
 ; return value to a register
 ; a,y are modified
