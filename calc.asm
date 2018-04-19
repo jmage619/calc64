@@ -40,7 +40,7 @@ next_digit lda coef,x
 stx coef_pos
 tax
 lda input,y
-sty in_len
+sty in_pos
 tay
 
 jsr mult8
@@ -48,7 +48,7 @@ clc
 adc data8
 sta data8
 ldx coef_pos
-ldy in_len
+ldy in_pos
 inx
 dey
 bpl next_digit
@@ -94,7 +94,7 @@ coef .byte 1, 10, 100
 scratch .byte $00, $00
 
 input .byte $00, $00, $00, $00, $00
-in_len .byte $00
+in_pos .byte $00
 coef_pos .byte $00
 data8 .byte $00
 data .word $0000
