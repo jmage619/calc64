@@ -8,6 +8,7 @@
 chrout = $ffd2
 chrin = $ffcf
 
+.(
 ; print prompt
 ldx #0
 ploop lda prompt,x
@@ -55,14 +56,22 @@ bpl next_digit
 
 rts
 
+prompt .byte "input: "
+coef .byte 1, 10, 100
+
+input .byte $00, $00, $00, $00, $00
+in_pos .byte $00
+coef_pos .byte $00
+data8 .byte $00
+data .word $0000
+.)
+
 ; mult8 multiplies two 8 bit integers
 ; input args are x and y registers
 ; return value to a register
 ; a,y are modified
 mult8
 .(
-input_a = scratch
-ret_val = scratch + 1
 lda #0
 sta ret_val
 stx input_a
@@ -86,15 +95,7 @@ clc
 adc input_a
 sta ret_val
 jmp shift_a
+
+input_a .byte 0
+ret_val .byte 0
 .)
-
-prompt .byte "input: "
-coef .byte 1, 10, 100
-
-scratch .byte $00, $00
-
-input .byte $00, $00, $00, $00, $00
-in_pos .byte $00
-coef_pos .byte $00
-data8 .byte $00
-data .word $0000
