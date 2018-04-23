@@ -68,8 +68,8 @@ data      .word $0000
           .)
 
 ; mult8 multiplies two 8 bit integers
-; input args are x and y registers
-; return value to a register
+; input args are reg x and y
+; return value to reg a
 ; a,y are modified
 
 mult8     .(
@@ -96,6 +96,58 @@ accum     lda ret_val
           adc input_a
           sta ret_val
           jmp shift_a
+
+input_a   .byte 0
+ret_val   .byte 0
+          .)
+
+; div8 divides two 8 bit integers
+; input args are reg x and y
+; return value to reg a and remainder to x
+; a,x,y are modified
+
+div8      .(
+          lda #0
+          sta ret_val
+          stx input_a
+
+          tya
+
+          ldy #0
+
+shift_max iny
+          clc
+          asl
+          bcc shift_max
+
+          ror
+
+next_digit
+          asl ret_val
+          cmp input_a
+          bcs check_eq
+
+eq        inc ret_val
+
+          pha
+          lda input_a
+          tsx
+          sec
+          sbc $0100+1,x
+          sta input_a
+          pla
+
+          jmp continue
+
+check_eq  beq eq
+
+continue  lsr
+          dey
+          bne next_digit
+
+          ldx input_a
+          lda ret_val
+          rts
 
 input_a   .byte 0
 ret_val   .byte 0
