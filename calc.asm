@@ -74,8 +74,8 @@ data      .word $0000
 
 mult8     .(
           lda #0
-          sta ret_val
-          stx input_a
+          sta $03 ; return val
+          stx $02 ; input a
 
 shift_b   tya
           beq return
@@ -84,20 +84,17 @@ shift_b   tya
 
           bcs accum
 
-shift_a   asl input_a
+shift_a   asl $02
           jmp shift_b
 
-return    lda ret_val
+return    lda $03
           rts
 
-accum     lda ret_val
+accum     lda $03
           clc
-          adc input_a
-          sta ret_val
+          adc $02
+          sta $03
           jmp shift_a
-
-input_a   .byte 0
-ret_val   .byte 0
           .)
 
 ; div8 divides two 8 bit integers
