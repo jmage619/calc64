@@ -78,7 +78,6 @@ mult8     .(
           stx input_a
 
 shift_b   tya
-          cmp #$0
           beq return
           lsr
           tay
