@@ -104,8 +104,8 @@ accum     lda $03
 
 div8      .(
           lda #0
-          sta ret_val
-          stx input_a
+          sta $03 ; return val
+          stx $02 ; input a
 
           tya
 
@@ -119,18 +119,18 @@ shift_max iny
           ror
 
 next_digit
-          asl ret_val
-          cmp input_a
+          asl $03
+          cmp $02
           bcs check_eq
 
-eq        inc ret_val
+eq        inc $03
 
           pha
-          lda input_a
+          lda $02
           tsx
           sec
           sbc $0100+1,x
-          sta input_a
+          sta $02
           pla
 
           jmp continue
@@ -141,10 +141,7 @@ continue  lsr
           dey
           bne next_digit
 
-          ldx input_a
-          lda ret_val
+          ldx $02
+          lda $03
           rts
-
-input_a   .byte 0
-ret_val   .byte 0
           .)
