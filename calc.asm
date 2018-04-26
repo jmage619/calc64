@@ -125,13 +125,13 @@ next_digit
 
 eq        inc $03
 
-          pha
+          ; tmp store val b to $04 to subtract it from a
+          sta $04
           lda $02
-          tsx
           sec
-          sbc $0100+1,x
-          sta $02
-          pla
+          sbc $04
+          sta $02 ; store result
+          lda $03 ; reload val b
 
           jmp continue
 
