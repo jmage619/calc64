@@ -55,6 +55,24 @@ next_digit
           dey
           bpl next_digit
 
+          ; print parsed number
+          tax
+          ldy #100
+          jsr div8
+          eor #$30
+          jsr chrout
+          and #$0F
+
+          ldy #10
+          jsr div8
+          eor #$30
+          jsr chrout
+          and #$0F
+
+          txa
+          eor #$30
+          jsr chrout
+
           rts
 
 prompt    .byte "input: "
