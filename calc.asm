@@ -127,8 +127,8 @@ accum     lda c
 
 div8      .(
           lda #0
-          sta $03 ; return val
-          stx $02 ; input a
+          sta c ; return val
+          stx a ; input a
 
           tya
 
@@ -142,19 +142,19 @@ shift_max iny
           ror
 
 next_digit
-          asl $03
-          cmp $02
+          asl c
+          cmp a
           bcs check_eq
 
-eq        inc $03
+eq        inc c
 
-          ; tmp store val b to $04 to subtract it from a
-          sta $04
-          lda $02
+          ; tmp store val b to subtract it from a
+          sta b
+          lda a
           sec
-          sbc $04
-          sta $02 ; store result
-          lda $04 ; reload val b
+          sbc b
+          sta a ; store result
+          lda b ; reload val b
 
           jmp continue
 
@@ -164,7 +164,7 @@ continue  lsr
           dey
           bne next_digit
 
-          ldx $02
-          lda $03
+          ldx a
+          lda c
           rts
           .)
