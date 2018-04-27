@@ -131,7 +131,7 @@ eq        inc $03
           sec
           sbc $04
           sta $02 ; store result
-          lda $03 ; reload val b
+          lda $04 ; reload val b
 
           jmp continue
 
