@@ -1,5 +1,10 @@
-chrout     =$ffd2
-chrin      =$ffcf
+chrout    =$ffd2
+chrin     =$ffcf
+
+; lowest zp vars for leaf subroutines
+a         =$02
+b         = a + $01
+c         = a + $02
 
           .(
           .word $0801
@@ -92,8 +97,8 @@ data      .word $0000
 
 mult8     .(
           lda #0
-          sta $03 ; return val
-          stx $02 ; input a
+          sta c ; return val
+          stx a ; input a
 
 shift_b   tya
           beq return
@@ -102,16 +107,16 @@ shift_b   tya
 
           bcs accum
 
-shift_a   asl $02
+shift_a   asl a
           jmp shift_b
 
-return    lda $03
+return    lda c
           rts
 
-accum     lda $03
+accum     lda c
           clc
-          adc $02
-          sta $03
+          adc a
+          sta c
           jmp shift_a
           .)
 
