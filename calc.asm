@@ -2,9 +2,15 @@ chrout    =$ffd2
 chrin     =$ffcf
 
 ; lowest zp vars for leaf subroutines
+
 a         =$02
 b         = a + $01
 c         = a + $02
+
+; zp vars for main
+
+in_pos    =$20
+coef_pos  = in_pos + $01
 
           .(
           .word $0801
@@ -84,8 +90,6 @@ prompt    .byte "input: "
 coef      .byte 1, 10, 100
 
 input     .byte $00, $00, $00, $00, $00
-in_pos    .byte $00
-coef_pos  .byte $00
 data8     .byte $00
 data      .word $0000
           .)
