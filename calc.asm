@@ -20,22 +20,32 @@ coef_pos  = in_pos + $01
           .byte $00
           .dsb $1000 - *
 
+loop      lda #0
+          sta data8
+
+          ldx #0
+clear     sta input,x
+          inx
+          cpx #5
+          bne clear
+
           ; print prompt
           ldx #0
-ploop     lda prompt,x
+prompt    lda pstr,x
           jsr chrout
           inx
           cpx #7
-          bne ploop
+          bne prompt
+
 
           ; get number from user
           ldy #$00
-rloop     jsr chrin
+read      jsr chrin
           and #$0F
           sta input,y
           iny
           cmp #$0d
-          bne rloop
+          bne read
 
           ; print new line
           lda #$0d
@@ -84,9 +94,12 @@ next_digit
           eor #$30
           jsr chrout
 
-          rts
+          lda #$0d
+          jsr chrout
 
-prompt    .byte "input: "
+          jmp loop
+
+pstr      .byte "input: "
 coef      .byte 1, 10, 100
 
 input     .byte $00, $00, $00, $00, $00
