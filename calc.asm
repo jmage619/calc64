@@ -80,18 +80,18 @@ next_digit
           tax
           ldy #100
           jsr div8
-          eor #$30
+          ora #$30
           jsr chrout
           and #$0F
 
           ldy #10
           jsr div8
-          eor #$30
+          ora #$30
           jsr chrout
           and #$0F
 
           txa
-          eor #$30
+          ora #$30
           jsr chrout
 
           lda #$0d
