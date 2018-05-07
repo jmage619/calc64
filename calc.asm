@@ -110,78 +110,51 @@ data      .word $0000
 ; mult8 multiplies two 8 bit integers
 ; input args are reg x and y
 ; return value to reg a
-; a,y are modified
+; a,x are modified
+; taken from:
+; http://www.llx.com/~nparker/a2/mult.html
 
 mult8     .(
-          lda #0
-          sta c ; return val
-          stx a ; input a
-
-shift_b   tya
-          beq return
-          lsr
-          tay
-
-          bcs accum
-
-shift_a   asl a
-          jmp shift_b
-
-return    lda c
-          rts
-
-accum     lda c
-          clc
+          stx a
+          sty b
+          lda #0       ;Initialize c to 0
+          ldx #8       ;There are 8 bits in b
+L1        lsr b     ;Get low bit of b
+          bcc L2       ;0 or 1?
+          clc          ;If 1, add a
           adc a
-          sta c
-          jmp shift_a
+L2        ror        ;"Stairstep" shift (catching carry from add)
+          ror c
+          dex
+          bne L1
+          lda c
+          rts
           .)
 
 ; div8 divides two 8 bit integers
 ; input args are reg x and y
 ; return value to reg a and remainder to x
-; a,x,y are modified
+; a,x are modified
+; taken from:
+; http://www.llx.com/~nparker/a2/mult.html
 
 div8      .(
-          lda #0
-          sta c ; return val
-          stx a ; input a
-
-          tya
-
-          ldy #0
-
-shift_max iny
-          clc
-          asl
-          bcc shift_max
-
-          ror
-
-next_digit
-          asl c
-          cmp a
-          bcs check_eq
-
-eq        inc c
-
-          ; tmp store val b to subtract it from a
-          sta b
-          lda a
-          sec
-          sbc b
-          sta a ; store result
-          lda b ; reload val b
-
-          jmp continue
-
-check_eq  beq eq
-
-continue  lsr
-          dey
-          bne next_digit
-
-          ldx a
+          stx a
+          sty b
+          lda #0      ;Initialize c to 0
+          sta c
+          ldx #8     ;There are 8 bits in a
+L1        asl a    ;Shift hi bit of a into c
+          rol c
           lda c
+          sec         ;Trial subtraction
+          sbc b
+          bcc L2      ;Did subtraction succeed?
+          sta c     ;If yes, save it
+          inc a    ;and record a 1 in the quotient
+L2        dex
+          bne L1
+          lda a
+          ldx c
           rts
           .)
