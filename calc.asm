@@ -3,13 +3,18 @@ chrin     =$ffcf
 
 ; lowest zp vars for leaf subroutines
 
-a         =$02
+a         = $02
 b         = a + $01
 c         = a + $02
 
+; word size zp vars
+wa        = $10
+wb        = wa + $02
+wc        = wa + $04
+
 ; zp vars for main
 
-in_pos    =$20
+in_pos    = $20
 coef_pos  = in_pos + $01
 
           .(
@@ -128,6 +133,38 @@ L2        ror        ;"Stairstep" shift (catching carry from add)
           dex
           bne L1
           lda c
+          rts
+          .)
+
+; mult16 multiplies two 16 bit integers
+; input args are wa and wb
+; 16 bit return value to wc
+; a,x,y are modified
+; taken from:
+; http://www.llx.com/~nparker/a2/mult.html
+
+mult16    .(
+          ;result is calculated into 4 bytes,
+          ; from msb - reg a, c, wc + 1, wc
+          lda #0       ;Initialize result to 0
+          sta c
+          ldx #16       ;There are 16 bits in wb
+L1        lsr wb + 1     ;Get low bit of wb
+          ror wb
+          bcc L2       ;0 or 1?
+          tay
+          clc          ;If 1, add wa (hi byte of wc is in reg a)
+          lda wa
+          adc c
+          sta c
+          tya
+          adc wa + 1
+L2        ror        ;"Stairstep" shift (catching carry from add)
+          ror c
+          ror wc + 1
+          ror wc
+          dex
+          bne L1
           rts
           .)
 
