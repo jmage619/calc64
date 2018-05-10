@@ -146,14 +146,14 @@ L2        ror        ;"Stairstep" shift (catching carry from add)
 mult16    .(
           ;result is calculated into 4 bytes,
           ; from msb - reg a, c, wc + 1, wc
-          lda #0       ;Initialize result to 0
+          lda #0     ;Initialize result to 0
           sta c
-          ldx #16       ;There are 16 bits in wb
-L1        lsr wb + 1     ;Get low bit of wb
+          ldx #16    ;There are 16 bits in wb
+L1        lsr wb + 1 ;Get low bit of wb
           ror wb
-          bcc L2       ;0 or 1?
+          bcc L2     ;0 or 1?
           tay
-          clc          ;If 1, add wa (hi byte of wc is in reg a)
+          clc        ;If 1, add wa (hi byte of wc is in reg a)
           lda wa
           adc c
           sta c
@@ -204,24 +204,24 @@ L2        dex
 ; http://www.llx.com/~nparker/a2/mult.html
 
 div16     .(
-          lda #0      ;Initialize wc to 0
+          lda #0     ;Initialize wc to 0
           sta wc
           sta wc + 1
-          ldx #16     ;There are 16 bits in wa
-L1        asl wa    ;Shift hi bit of wa into wc
+          ldx #16    ;There are 16 bits in wa
+L1        asl wa     ;Shift hi bit of wa into wc
           rol wa + 1
           rol wc
           rol wc + 1
           lda wc
-          sec         ;Trial subtraction
+          sec        ;Trial subtraction
           sbc wb
           tay
           lda wc + 1
           sbc wb + 1
-          bcc L2      ;Did subtraction succeed?
-          sta wc + 1     ;If yes, save it
+          bcc L2     ;Did subtraction succeed?
+          sta wc + 1 ;If yes, save it
           sty wc
-          inc wa    ;and record a 1 in the quotient
+          inc wa     ;and record a 1 in the quotient
 L2        dex
           bne L1
           rts
