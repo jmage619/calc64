@@ -195,3 +195,34 @@ L2        dex
           ldx c
           rts
           .)
+
+; div16 divides two 16 bit integers
+; input args are wa and wb
+; return value to wa and remainder to wc
+; a,x,y are modified
+; taken from:
+; http://www.llx.com/~nparker/a2/mult.html
+
+div16     .(
+          lda #0      ;Initialize wc to 0
+          sta wc
+          sta wc + 1
+          ldx #16     ;There are 16 bits in wa
+L1        asl wa    ;Shift hi bit of wa into wc
+          rol wa + 1
+          rol wc
+          rol wc + 1
+          lda wc
+          sec         ;Trial subtraction
+          sbc wb
+          tay
+          lda wc + 1
+          sbc wb + 1
+          bcc L2      ;Did subtraction succeed?
+          sta wc + 1     ;If yes, save it
+          sty wc
+          inc wa    ;and record a 1 in the quotient
+L2        dex
+          bne L1
+          rts
+          .)
