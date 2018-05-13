@@ -26,12 +26,11 @@ coef_pos  = in_pos + $01
           .dsb $1000 - *
 
 loop      lda #0
-          sta data8
 
           ldx #0
 clear     sta input,x
           inx
-          cpx #5
+          cpx #20
           bne clear
 
           ; print prompt
@@ -46,7 +45,6 @@ prompt    lda pstr,x
           ; get number from user
           ldy #$00
 read      jsr chrin
-          and #$0F
           sta input,y
           iny
           cmp #$0d
@@ -56,60 +54,91 @@ read      jsr chrin
           lda #$0d
           jsr chrout
 
-          ; set y to last digit index
+          ; set y to last digit index, parsing input
+          ; backwards to convert decimcal chars to words
           dey
           dey
-          ldx #$00
 
-          ; loop digits and aggregate
-          ; value into data8
-next_digit
-          lda coef,x
-          stx coef_pos
-          tax
+          ; parse num2 1s
+          lda #0
+          sta num2 + 1
           lda input,y
-          sty in_pos
-          tay
+          and #$0F
+          sta num2
 
-          jsr mult8
-          clc
-          adc data8
-          sta data8
-          ldx coef_pos
-          ldy in_pos
-          inx
           dey
-          bpl next_digit
 
-          ; print parsed number
-          tax
-          ldy #100
-          jsr div8
-          ora #$30
-          jsr chrout
+          ; parse num2 10s
+          lda #0
+          sta wa + 1
+          sta wb + 1
+          lda #10
+          sta wa
+          lda input,y
           and #$0F
+          sta wb
+          jsr mult16
 
-          ldy #10
-          jsr div8
-          ora #$30
-          jsr chrout
-          and #$0F
+          lda num2
+          clc
+          adc wc
+          sta num2
 
-          txa
-          ora #$30
-          jsr chrout
+          rts
 
-          lda #$0d
-          jsr chrout
+;          ldx #$00
+;
+;          ; loop digits and aggregate
+;          ; value into data8
+;next_digit
+;          lda coef,x
+;          tax
+;          lda input,y
+;          sty in_pos
+;          tay
+;
+;          jsr mult8
+;          clc
+;          adc data8
+;          sta data8
+;          ldx coef_pos
+;          ldy in_pos
+;          inx
+;          dey
+;          bpl next_digit
+;
+;          ; print parsed number
+;          tax
+;          ldy #100
+;          jsr div8
+;          ora #$30
+;          jsr chrout
+;          and #$0F
+;
+;          ldy #10
+;          jsr div8
+;          ora #$30
+;          jsr chrout
+;          and #$0F
+;
+;          txa
+;          ora #$30
+;          jsr chrout
+;
+;          lda #$0d
+;          jsr chrout
 
           jmp loop
 
 pstr      .byte "input: "
 coef      .byte 1, 10, 100
 
-input     .byte $00, $00, $00, $00, $00
-data8     .byte $00
-data      .word $0000
+input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+num1      .word 0
+num2      .word 0
+result    .word 0
+;data8     .byte $00
+;data      .word $0000
           .)
 
 ; mult8 multiplies two 8 bit integers
