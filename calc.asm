@@ -59,31 +59,41 @@ read      jsr chrin
           dey
           dey
 
-          ; parse num2 1s
-          lda #0
-          sta num2 + 1
-          lda input,y
-          and #$0F
-          sta num2
-
-          dey
-
-          ; parse num2 10s
-          lda #0
-          sta wa + 1
-          sta wb + 1
-          lda #10
+          ldx #0
+next_digit
+          lda coef,x
           sta wa
+          inx
+          lda coef,x
+          sta wa + 1
           lda input,y
+          cmp #$2a
+          beq next_num
+
           and #$0F
           sta wb
+          lda #0
+          sta wb + 1
+          sty in_pos
+          stx coef_pos
           jsr mult16
 
           lda num2
           clc
           adc wc
           sta num2
+          lda num2 + 1
+          adc wc + 1
+          sta num2 + 1
 
+          ldy in_pos
+          ldx coef_pos
+          dey
+          inx
+          cpx #10
+          bne next_digit
+
+next_num
           rts
 
 ;          ldx #$00
@@ -131,7 +141,7 @@ read      jsr chrin
           jmp loop
 
 pstr      .byte "input: "
-coef      .byte 1, 10, 100
+coef      .word 1,10,100,1000,10000
 
 input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 num1      .word 0
