@@ -31,7 +31,7 @@ loop      lda #0
           ldx #0
 clear     sta input,x
           inx
-          cpx #20
+          cpx #24
           bne clear
 
           ; print prompt
@@ -86,58 +86,18 @@ read      jsr chrin
 
           jsr print16
 
-          rts
-
-;          ldx #$00
-;
-;          ; loop digits and aggregate
-;          ; value into data8
-;next_digit
-;          lda coef,x
-;          tax
-;          lda input,y
-;          sty in_pos
-;          tay
-;
-;          jsr mult8
-;          clc
-;          adc data8
-;          sta data8
-;          ldx coef_pos
-;          ldy in_pos
-;          inx
-;          dey
-;          bpl next_digit
-;
-;          ; print parsed number
-;          tax
-;          ldy #100
-;          jsr div8
-;          ora #$30
-;          jsr chrout
-;          and #$0F
-;
-;          ldy #10
-;          jsr div8
-;          ora #$30
-;          jsr chrout
-;          and #$0F
-;
-;          txa
-;          ora #$30
-;          jsr chrout
-;
-;          lda #$0d
-;          jsr chrout
+          ; print new line
+          lda #$0d
+          jsr chrout
 
           jmp loop
 
 pstr      .byte "input: "
-+coef      .word 1,10,100,1000,10000
++coef     .word 1,10,100,1000,10000
 
-+input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-tmp16      .word 0
-result     .word 0
++input    .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+tmp16     .word 0
+result    .word 0
 ;data8     .byte $00
 ;data      .word $0000
           .)
@@ -204,30 +164,6 @@ next_digit
           rts
           .)
 
-; mult8 multiplies two 8 bit integers
-; input args are reg x and y
-; return value to reg a
-; a,x are modified
-; taken from:
-; http://www.llx.com/~nparker/a2/mult.html
-
-mult8     .(
-          stx a
-          sty b
-          lda #0       ;Initialize c to 0
-          ldx #8       ;There are 8 bits in b
-L1        lsr b     ;Get low bit of b
-          bcc L2       ;0 or 1?
-          clc          ;If 1, add a
-          adc a
-L2        ror        ;"Stairstep" shift (catching carry from add)
-          ror c
-          dex
-          bne L1
-          lda c
-          rts
-          .)
-
 ; mult16 multiplies two 16 bit integers
 ; input args are wa and wb
 ; 16 bit return value to wc
@@ -257,34 +193,6 @@ L2        ror         ;"Stairstep" shift (catching carry from add)
           ror wc
           dex
           bne L1
-          rts
-          .)
-
-; div8 divides two 8 bit integers
-; input args are reg x and y
-; return value to reg a and remainder to x
-; a,x are modified
-; taken from:
-; http://www.llx.com/~nparker/a2/mult.html
-
-div8      .(
-          stx a
-          sty b
-          lda #0      ;Initialize c to 0
-          sta c
-          ldx #8     ;There are 8 bits in a
-L1        asl a    ;Shift hi bit of a into c
-          rol c
-          lda c
-          sec         ;Trial subtraction
-          sbc b
-          bcc L2      ;Did subtraction succeed?
-          sta c     ;If yes, save it
-          inc a    ;and record a 1 in the quotient
-L2        dex
-          bne L1
-          lda a
-          ldx c
           rts
           .)
 
