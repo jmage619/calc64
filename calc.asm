@@ -60,11 +60,29 @@ read      jsr chrin
           dey
           dey
 
+          ; get 2nd operand
           jsr parse_num
+          lda wd
+          sta tmp16
+          lda wd + 1
+          sta tmp16 + 1
 
-next_num
-          dey
-          ldx #0
+          dey ; skip * char
+
+          ; get 1st operand
+          jsr parse_num
+          lda wd
+          sta wa
+          lda wd + 1
+          sta wa + 1
+
+          ; perform multiplication
+          lda tmp16
+          sta wb
+          lda tmp16 + 1
+          sta wb + 1
+
+          jsr mult16
 
           rts
 
@@ -115,10 +133,9 @@ next_num
 pstr      .byte "input: "
 +coef      .word 1,10,100,1000,10000
 
-+input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-num1      .word 0
-num2      .word 0
-result    .word 0
++input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+tmp16      .word 0
+result     .word 0
 ;data8     .byte $00
 ;data      .word $0000
           .)
