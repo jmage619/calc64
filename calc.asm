@@ -11,6 +11,7 @@ c         = a + $02
 wa        = $10
 wb        = wa + $02
 wc        = wa + $04
+wd        = wa + $06
 
 ; zp vars for main
 
@@ -59,41 +60,12 @@ read      jsr chrin
           dey
           dey
 
-          ldx #0
-next_digit
-          lda coef,x
-          sta wa
-          inx
-          lda coef,x
-          sta wa + 1
-          lda input,y
-          cmp #$2a
-          beq next_num
-
-          and #$0F
-          sta wb
-          lda #0
-          sta wb + 1
-          sty in_pos
-          stx coef_pos
-          jsr mult16
-
-          lda num2
-          clc
-          adc wc
-          sta num2
-          lda num2 + 1
-          adc wc + 1
-          sta num2 + 1
-
-          ldy in_pos
-          ldx coef_pos
-          dey
-          inx
-          cpx #10
-          bne next_digit
+          jsr parse_num
 
 next_num
+          dey
+          ldx #0
+
           rts
 
 ;          ldx #$00
@@ -141,14 +113,53 @@ next_num
           jmp loop
 
 pstr      .byte "input: "
-coef      .word 1,10,100,1000,10000
++coef      .word 1,10,100,1000,10000
 
-input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
++input     .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 num1      .word 0
 num2      .word 0
 result    .word 0
 ;data8     .byte $00
 ;data      .word $0000
+          .)
+
+parse_num .(
+          ldx #0
+          stx wd
+          stx wd + 1
+next_digit
+          lda coef,x
+          sta wa
+          inx
+          lda coef,x
+          sta wa + 1
+          lda input,y
+          cmp #$2a
+          beq return
+
+          and #$0F
+          sta wb
+          lda #0
+          sta wb + 1
+          sty in_pos
+          stx coef_pos
+          jsr mult16
+
+          lda wd
+          clc
+          adc wc
+          sta wd
+          lda wd + 1
+          adc wc + 1
+          sta wd + 1
+
+          ldy in_pos
+          ldx coef_pos
+          inx
+          dey
+          bpl next_digit
+
+return    rts
           .)
 
 ; mult8 multiplies two 8 bit integers
