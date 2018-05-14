@@ -84,6 +84,8 @@ read      jsr chrin
 
           jsr mult16
 
+          jsr print16
+
           rts
 
 ;          ldx #$00
@@ -177,6 +179,29 @@ next_digit
           bpl next_digit
 
 return    rts
+          .)
+
+print16   .(
+          ldx #9
+next_digit
+          lda wc
+          sta wa
+          lda wc + 1
+          sta wa + 1
+          lda coef,x
+          sta wb + 1
+          dex
+          lda coef,x
+          sta wb
+          stx coef_pos
+          jsr div16
+          lda wa
+          ora #$30
+          jsr chrout
+          ldx coef_pos
+          dex
+          bpl next_digit
+          rts
           .)
 
 ; mult8 multiplies two 8 bit integers
