@@ -1,8 +1,7 @@
-chrout    =$ffd2
-chrin     =$ffcf
+chrout    = $ffd2
+chrin     = $ffcf
 
 ; lowest zp vars for leaf subroutines
-
 a         = $02
 b         = a + $01
 c         = a + $02
@@ -13,10 +12,10 @@ wb        = wa + $02
 wc        = wa + $04
 wd        = wa + $06
 
-; zp vars for main
-
+; global zp vars
 in_pos    = $20
 coef_pos  = in_pos + $01
+tmp16     = in_pos + $02
 
           .(
           .word $0801
@@ -41,7 +40,6 @@ prompt    lda pstr,x
           inx
           cpx #7
           bne prompt
-
 
           ; get number from user
           ldy #$00
@@ -96,10 +94,6 @@ pstr      .byte "input: "
 +coef     .word 1,10,100,1000,10000
 
 +input    .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-tmp16     .word 0
-result    .word 0
-;data8     .byte $00
-;data      .word $0000
           .)
 
 parse_num .(
