@@ -16,6 +16,7 @@ wd        = wa + $06
 in_pos    = $20
 coef_pos  = in_pos + $01
 tmp16     = in_pos + $02
+pflags    = in_pos + $04
 
           .(
           .word $0801
@@ -95,11 +96,11 @@ pstr      .byte "input: "
 
 +input    .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           .)
-
 parse_num .(
           ldx #0
           stx wd
           stx wd + 1
+          stx pflags
 next_digit
           lda coef,x
           sta wa
@@ -110,7 +111,23 @@ next_digit
           cmp #$2a
           beq return
 
-          and #$0F
+          ; if minus sign flip
+          ; otherwise assume is a number
+          cmp #$2d
+          bne get_num
+          lda wd
+          eor #$ff
+          clc
+          adc #1
+          sta wd
+          lda wd + 1
+          eor #$ff
+          adc #0
+          sta wd + 1
+
+          jmp next
+
+get_num   and #$0F
           sta wb
           lda #0
           sta wb + 1
@@ -128,7 +145,7 @@ next_digit
 
           ldy in_pos
           ldx coef_pos
-          inx
+next      inx
           dey
           bpl next_digit
 
