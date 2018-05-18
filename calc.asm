@@ -133,7 +133,7 @@ get_num   and #$0F
           sta wb + 1
           sty in_pos
           stx coef_pos
-          jsr mult16
+          jsr umult16
 
           lda wd
           clc
@@ -175,14 +175,72 @@ next_digit
           rts
           .)
 
-; mult16 multiplies two 16 bit integers
+mult16    .(
+          ; test first op
+          lda #$80
+          and wa + 1
+          sta a ; store result
+          beq next
+
+          ; convert to pos if neg
+          lda wa
+          eor #$ff
+          clc
+          adc #1
+          sta wa
+          lda wa + 1
+          eor #$ff
+          adc #0
+          sta wa + 1
+
+          ; test next op
+next      lda #$80
+          and wb + 1
+          beq rsin
+
+          ; convert to pos if neg
+          tax
+          lda wb
+          eor #$ff
+          clc
+          adc #1
+          sta wb
+          lda wb + 1
+          eor #$ff
+          adc #0
+          sta wb + 1
+          txa
+
+          ; determine sign of result
+rsin      eor a
+          sta a
+
+          jsr umult16
+          lda a
+          beq return
+
+          ; convert to neg if needed
+          lda wc
+          eor #$ff
+          clc
+          adc #1
+          sta wc
+          lda wc + 1
+          eor #$ff
+          adc #0
+          sta wc + 1
+
+return    rts
+          .)
+
+; umult16 multiplies two 16 bit integers
 ; input args are wa and wb
 ; 16 bit return value to wc
 ; a,x,y are modified
 ; taken from:
 ; http://www.llx.com/~nparker/a2/mult.html
 
-mult16    .(
+umult16    .(
           ;result is calculated into 4 bytes,
           ; from msb - reg a, c, wc + 1, wc
           lda #0      ;Initialize result to 0
