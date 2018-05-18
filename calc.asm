@@ -172,6 +172,8 @@ print16   .(
           jsr chrout
 
 init      ldx #9
+          lda #0
+          sta a
 next_digit
           lda wc
           sta wa
@@ -185,12 +187,20 @@ next_digit
           stx coef_pos
           jsr div16
           lda wa
-          ora #$30
+          beq chk_z
+          ldy #1
+          sty a
+
+print     ora #$30
           jsr chrout
-          ldx coef_pos
+iter      ldx coef_pos
           dex
           bpl next_digit
           rts
+
+chk_z     ldy a
+          beq iter
+          jmp print
           .)
 
 mult16    .(
