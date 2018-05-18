@@ -153,7 +153,25 @@ return    rts
           .)
 
 print16   .(
-          ldx #9
+          lda #$80
+          bit wc + 1
+          beq init
+
+          ; if negative, make positive and print - sign
+          lda wc
+          eor #$ff
+          clc
+          adc #1
+          sta wc
+          lda wc + 1
+          eor #$ff
+          adc #0
+          sta wc + 1
+
+          lda #$2d
+          jsr chrout
+
+init      ldx #9
 next_digit
           lda wc
           sta wa
