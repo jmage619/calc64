@@ -153,7 +153,16 @@ return    rts
           .)
 
 print16   .(
-          lda #$80
+          ; special case just print 0 if 0
+          lda wc
+          bne chk_n
+          lda wc + 1
+          bne chk_n
+          lda #$30
+          jsr chrout
+          rts
+
+chk_n     lda #$80
           bit wc + 1
           beq init
 
