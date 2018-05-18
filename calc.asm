@@ -202,13 +202,13 @@ next_digit
 
 print     ora #$30
           jsr chrout
-iter      ldx coef_pos
+next      ldx coef_pos
           dex
           bpl next_digit
           rts
 
 chk_z     ldy a
-          beq iter
+          beq next
           jmp print
           .)
 
