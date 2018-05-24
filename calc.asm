@@ -1,12 +1,11 @@
           .include "math.inc"
 
-          .include "zp.asm"
-
-          .code
+          .include "zeropage.inc"
 
 chrout    = $ffd2
 chrin     = $ffcf
 
+          .code
 loop:     lda #0
 
           ldx #0

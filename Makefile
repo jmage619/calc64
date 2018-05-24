@@ -6,10 +6,10 @@ test.d64: calc
 calc: calc.o math.o
 	cl65 -u __EXEHDR__ -C c64-asm.cfg -o $@ $^
 
-calc.o: calc.asm math.inc zp.asm
+calc.o: calc.asm math.inc zeropage.inc
 	cl65 -c -t c64 -o $@ $<
 
-math.o: math.asm math.inc zp.asm
+math.o: math.asm math.inc zeropage.inc
 	cl65 -c -t c64 -o $@ $<
 
 clean:

@@ -1,5 +1,3 @@
-          .zeropage
-
 ; lowest zp vars for leaf subroutines
 i         = $02
 j         = i + $01

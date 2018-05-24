@@ -1,9 +1,8 @@
           .include "math.inc"
 
-          .include "zp.asm"
+          .include "zeropage.inc"
 
           .code
-
 .proc     mult16
           ; test first op
           lda #$80
