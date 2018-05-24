@@ -5,7 +5,6 @@
 chrout    = $ffd2
 chrin     = $ffcf
 
-          .scope
 loop:     lda #0
 
           ldx #0
@@ -72,7 +71,6 @@ read:     jsr chrin
           jmp loop
 
 
-          .endscope
 
 .proc     parse_num
           ldx #0
