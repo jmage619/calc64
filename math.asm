@@ -1,5 +1,6 @@
-          .include "math.h"
-          .include "zp.h"
+          .include "math.inc"
+
+          .include "zp.asm"
 
           .code
 
