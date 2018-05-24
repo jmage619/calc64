@@ -2,5 +2,8 @@ Just some dumb attempts at assembly coding for the Commodore 64.
 
 Don't judge me, I don't know what I'm doing
 
-assembled with xa65:
+assembled with ca65:
+https://github.com/cc65/cc65
+
+original prototype with xa65:
 http://www.floodgap.com/retrotech/xa/
