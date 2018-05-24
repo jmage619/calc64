@@ -74,8 +74,7 @@ read:     jsr chrin
 
           .endscope
 
-parse_num:
-          .scope
+.proc     parse_num
           ldx #0
           stx wl
           stx wl + 1
@@ -129,9 +128,9 @@ next:     inx
           bpl next_digit
 
 return:   rts
-          .endscope
+          .endproc
 
-print16:  .scope
+.proc     print16
           ; special case just print 0 if 0
           lda wk
           bne chk_n
@@ -189,7 +188,7 @@ next:     ldx coef_pos
 chk_z:    ldy i
           beq next
           jmp print
-          .endscope
+          .endproc
 
           .rodata
 pstr:     .byte "input: "

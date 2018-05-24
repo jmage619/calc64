@@ -3,7 +3,7 @@
 
           .code
 
-mult16:   .scope
+.proc     mult16
           ; test first op
           lda #$80
           and wi + 1
@@ -59,7 +59,7 @@ rsin:     eor i
           sta wk + 1
 
 return:   rts
-          .endscope
+          .endproc
 
 ; umult16 multiplies two 16 bit integers
 ; input args are wi and wj
@@ -68,7 +68,7 @@ return:   rts
 ; taken from:
 ; http://www.llx.com/~nparker/a2/mult.html
 
-umult16:  .scope
+.proc     umult16
           ;result is calculated into 4 bytes,
           ; from msb - reg a, k, wk + 1, wk
           lda #0      ;Initialize result to 0
@@ -91,7 +91,7 @@ L2:       ror         ;"Stairstep" shift (catching carry from add)
           dex
           bne L1
           rts
-          .endscope
+          .endproc
 
 ; div16 divides two 16 bit integers
 ; input args are wi and wj
@@ -100,7 +100,7 @@ L2:       ror         ;"Stairstep" shift (catching carry from add)
 ; taken from:
 ; http://www.llx.com/~nparker/a2/mult.html
 
-div16:    .scope
+.proc     div16
           lda #0      ;Initialize wk to 0
           sta wk
           sta wk + 1
@@ -122,4 +122,4 @@ L1:       asl wi      ;Shift hi bit of wi into wk
 L2:       dex
           bne L1
           rts
-          .endscope
+          .endproc
