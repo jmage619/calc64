@@ -33,3 +33,34 @@ L2:       ror         ;"Stairstep" shift (catching carry from add)
           bne L1
           rts
           .endscope
+
+; div16 divides two 16 bit integers
+; input args are wi and wj
+; return value to wi and remainder to wk
+; a,x,y are modified
+; taken from:
+; http://www.llx.com/~nparker/a2/mult.html
+
+div16:    .scope
+          lda #0      ;Initialize wk to 0
+          sta wk
+          sta wk + 1
+          ldx #16     ;There are 16 bits in wi
+L1:       asl wi      ;Shift hi bit of wi into wk
+          rol wi + 1
+          rol wk
+          rol wk + 1
+          lda wk
+          sec         ;Trial subtraction
+          sbc wj
+          tay
+          lda wk + 1
+          sbc wj + 1
+          bcc L2      ;Did subtraction succeed?
+          sta wk + 1  ;If yes, save it
+          sty wk
+          inc wi      ;and record a 1 in the quotient
+L2:       dex
+          bne L1
+          rts
+          .endscope
