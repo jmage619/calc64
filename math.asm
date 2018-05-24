@@ -2,6 +2,64 @@
 
           .code
 
+mult16:   .scope
+          ; test first op
+          lda #$80
+          and wi + 1
+          sta i ; store result
+          beq next
+
+          ; convert to pos if neg
+          lda wi
+          eor #$ff
+          clc
+          adc #1
+          sta wi
+          lda wi + 1
+          eor #$ff
+          adc #0
+          sta wi + 1
+
+          ; test next op
+next:     lda #$80
+          and wj + 1
+          beq rsin
+
+          ; convert to pos if neg
+          tax
+          lda wj
+          eor #$ff
+          clc
+          adc #1
+          sta wj
+          lda wj + 1
+          eor #$ff
+          adc #0
+          sta wj + 1
+          txa
+
+          ; determine sign of result
+rsin:     eor i
+          sta i
+
+          jsr umult16
+          lda i
+          beq return
+
+          ; convert to neg if needed
+          lda wk
+          eor #$ff
+          clc
+          adc #1
+          sta wk
+          lda wk + 1
+          eor #$ff
+          adc #0
+          sta wk + 1
+
+return:   rts
+          .endscope
+
 ; umult16 multiplies two 16 bit integers
 ; input args are wi and wj
 ; 16 bit return value to wk
